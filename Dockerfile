@@ -81,12 +81,12 @@ WORKDIR ${HOME}
 RUN rm -rf ubpf
 
 # Install MLNX OFED drivers
-#ARG MLNX_OFED=MLNX_OFED_LINUX-5.1-0.6.6.0-rhel8.2-x86_64
-#RUN set -o pipefail && curl -L http://content.mellanox.com/ofed/MLNX_OFED-5.1-0.6.6.0/${MLNX_OFED}.tgz | tar -C . -xz
-#WORKDIR ${HOME}/${MLNX_OFED}
-#RUN set -o pipefail && export TERM=linux && sudo ./mlnxofedinstall -vvv --force --dpdk --add-kernel-support --kernel-sources /usr/src/kernels/`uname -r`
-#WORKDIR ${HOME}
-#RUN rm -rf ${MLNX_OFED}
+ARG MLNX_OFED=MLNX_OFED_LINUX-5.1-0.6.6.0-rhel8.2-x86_64
+RUN set -o pipefail && curl -L http://content.mellanox.com/ofed/MLNX_OFED-5.1-0.6.6.0/${MLNX_OFED}.tgz | tar -C . -xz
+WORKDIR ${HOME}/${MLNX_OFED}
+RUN set -o pipefail && export TERM=linux && sudo ./mlnxofedinstall -vvv --force --dpdk --add-kernel-support --kernel-sources /usr/src/kernels/`uname -r`
+WORKDIR ${HOME}
+RUN rm -rf ${MLNX_OFED}
 
 # Install rdma core
 RUN set -o pipefail && curl -L https://github.com/linux-rdma/rdma-core/releases/download/v25.0/rdma-core-25.0.tar.gz | tar -C . -xz
@@ -152,8 +152,6 @@ WORKDIR ${HOME}
 WORKDIR ${GOPATH}/src
 RUN git clone https://github.com/usnistgov/ndn-dpdk.git
 WORKDIR ${GOPATH}/src/ndn-dpdk
-# Use September 17th 2020 commit: 1586ca4294ccb7e1d24844fce7bf6c1856009eb6
-#RUN git checkout 1586ca4294ccb7e1d24844fce7bf6c1856009eb6
 RUN npm install webpack@1.11.0
 RUN npm install
 ENV BPFCC=clang-10
